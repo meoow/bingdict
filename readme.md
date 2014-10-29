@@ -3,9 +3,7 @@
 
 ## Build:
 ```sh
-git clone https://github.com/meoow/bingdict.git
-cd bingdict
-go build
+go get github.com/meoow/bingdict
 ```
 
 ## Usage:  
