@@ -4,6 +4,7 @@ import "github.com/meoow/nodefinder"
 import "fmt"
 import "net/http"
 import "log"
+import "strings"
 
 const (
 	bing_uri  string = "http://cn.bing.com/dict/search?q=%s&go=&qs=bs&form=CM&mkt=zh-CN&setlang=ZH"
@@ -11,6 +12,13 @@ const (
 	language  string = "en-us,en;q=0.5"
 	charset   string = "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
 	format    string = "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+)
+
+var (
+	qdefPath = nodefinder.NewPath("div.qdef")
+	prPath   = nodefinder.NewPath("div.hd_pr")
+	prusPath = nodefinder.NewPath("div.hd_prUS")
+	listPath = nodefinder.NewPath("ul/li")
 )
 
 func main() {
@@ -29,8 +37,7 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	defNode, err := nodefinder.Find(
-		nodefinder.NewPath("div.qdef"), resp.Body)
+	defNode, err := nodefinder.Find(qdefPath, resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,19 +45,18 @@ func main() {
 		return
 	}
 
-	pr1Nodes := nodefinder.FindByNode(
-		nodefinder.NewPath("div.hd_prUS"), defNode[0])
-	pr2Nodes := nodefinder.FindByNode(
-		nodefinder.NewPath("div.hd_pr"), defNode[0])
-	for _, pn := range pr1Nodes {
-		fmt.Println(pn.FirstChild.Data)
+	pr1Nodes := nodefinder.FindByNode(prusPath, defNode[0])
+	if len(pr1Nodes) > 0 && strings.HasSuffix(pr1Nodes[0].FirstChild.Data, "] ") {
+		fmt.Println(pr1Nodes[0].FirstChild.Data)
 	}
-	for _, pn := range pr2Nodes {
-		fmt.Println(pn.FirstChild.Data)
+
+	pr2Nodes := nodefinder.FindByNode(prPath, defNode[0])
+	if len(pr2Nodes) > 0 && strings.HasSuffix(pr2Nodes[0].FirstChild.Data, "] ") {
+		fmt.Println(pr2Nodes[0].FirstChild.Data)
 	}
 
 	fmt.Println("")
-	defsNodes := nodefinder.FindByNode(nodefinder.NewPath("ul/li"), defNode[0])
+	defsNodes := nodefinder.FindByNode(listPath, defNode[0])
 	for _, dn := range defsNodes {
 		fmt.Printf("[%s] %s\n",
 			dn.FirstChild.FirstChild.Data,
