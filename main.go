@@ -7,11 +7,12 @@ import "log"
 import "strings"
 
 const (
-	bing_uri  string = "http://cn.bing.com/dict/search?q=%s&go=&qs=bs&form=CM&mkt=zh-CN&setlang=ZH"
-	userAgent string = "Mozilla/5.0 (iPod; CPU iPhone OS 6_1_6 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B500 Safari/8536.25"
-	language  string = "en-us,en;q=0.5"
-	charset   string = "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
-	format    string = "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+	bing_uri    string = "http://cn.bing.com/dict/search?q=%s&go=&qs=bs&form=CM&mkt=zh-CN&setlang=ZH"
+	userAgent   string = "Mozilla/5.0 (iPod; CPU iPhone OS 6_1_6 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B500 Safari/8536.25"
+	language    string = "en-us,en;q=0.5"
+	charset     string = "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
+	format      string = "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"
+	content_enc string = "gzip, deflate"
 )
 
 var (
@@ -28,6 +29,7 @@ func main() {
 	reqst.Header.Add("User-Agent", userAgent)
 	reqst.Header.Add("Accept-Language", language)
 	reqst.Header.Add("Accept-Charset", charset)
+	reqst.Header.Add("Content-Encoding", content_enc)
 
 	client := &http.Client{}
 
